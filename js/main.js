@@ -15,6 +15,8 @@ var audioIndex = 0;
 var resultsArea;
 var outcomeArea;
 
+var spinnerImage;
+
 // const colourCycle = [
 // 	"#FFD1D1",
 // 	"#FBFFDE",
@@ -38,6 +40,8 @@ $(document).ready(function(){
 
 	resultsArea = $("#resultsList")[0];
 	outcomeArea = $("#outcomeArea");
+
+	spinnerImage = $("#flat");
 
 	CAN = $("#wheel")[0];
 
@@ -197,7 +201,11 @@ class Wheel{
 
 		ctx.save();
 		ctx.translate(CENTER[0], CENTER[1]);
-		ctx.rotate(-1*(this.sep/2-0.01) + this.rotation);
+		ctx.rotate(this.rotation);
+
+		ctx.drawImage(spinnerImage[0], -CENTER[1]*0.25, -CENTER[1]*0.25, CENTER[1]*0.5, CENTER[1]*0.5);
+
+		ctx.rotate(-1*(this.sep/2-0.01));
 		ctx.fillStyle = "black";
 		ctx.lineWidth = 1;
 
