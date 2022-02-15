@@ -23,12 +23,50 @@ h2{
 
 #resultsList{
 	background-color: white;
-	width: 22.5%;
-	top: 2.5%;
-	right: 2.5%;
+	width: 22.5vw;
+	top: 20vh;
+	right: 2.5vw;
 	position: absolute;
 	box-sizing: border-box;
 	text-align: center;
+	z-index: 2;
+	border-radius: 40px;
+}
+
+h3{
+	font-size: 20px;	
+}
+
+#outcomeArea{
+	position: absolute;
+	background-color: white;
+	width: 67.5vw;
+	height: 75vh;
+	left: 2.5vw;
+	top: 20vh;
+	z-index: 2;
+	display: flex;
+	border-radius: 80px;
+	text-align: center;
+
+	justify-content: center;
+	align-content: center;
+	flex-direction: column;
+}
+
+.outcome{
+	vertical-align: middle;
+	font-size: 50px;
+	margin: 0;
+}
+
+#wheel{
+	z-index: 1;
+}
+
+#instructionText{
+	position: relative;
+	bottom: 2.5%;
 }
 
 .canvasHolder{
