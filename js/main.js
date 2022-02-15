@@ -6,7 +6,7 @@ const FPS = 60;
 var OVERLAY;
 var OVERLAY_CTX;
 
-const audioCount = 256;
+const audioCount = 64;
 
 const audio = new Audio('assets/click.mp3');
 var audioSources = [];
