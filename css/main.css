@@ -17,6 +17,20 @@ h2{
 	color: white;
 }
 
+#contentOverlay{
+	background-color: white;
+}
+
+#resultsList{
+	background-color: white;
+	width: 22.5%;
+	top: 2.5%;
+	right: 2.5%;
+	position: absolute;
+	box-sizing: border-box;
+	text-align: center;
+}
+
 .canvasHolder{
 	width: 100vw;
 	height: 85vh;

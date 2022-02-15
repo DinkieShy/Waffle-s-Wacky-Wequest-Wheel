@@ -3,8 +3,6 @@ var CAN;
 var CTX;
 var CENTER;
 const FPS = 60;
-var OVERLAY;
-var OVERLAY_CTX;
 
 var drawInterval;
 
@@ -13,6 +11,8 @@ const audioCount = 256;
 const audio = new Audio('assets/click.mp3');
 var audioSources = [];
 var audioIndex = 0;
+
+var resultsArea;
 
 // const colourCycle = [
 // 	"#FFD1D1",
@@ -35,12 +35,12 @@ var colourIndex = 0;
 $(document).ready(function(){
 	console.log("init");
 
-	OVERLAY = $("#wheelOverlay")[0];
+	resultsArea = $("#resultsList")[0];
+
 	CAN = $("#wheel")[0];
 
 	sizeCanvas();
 
-	OVERLAY_CTX = OVERLAY.getContext("2d");
 	CTX = CAN.getContext("2d");
 	CTX.textAlign = "right";
 	CTX.textBaseline = 'middle';
@@ -68,8 +68,6 @@ function sizeCanvas(){
 	var canvasArea = $("#contentArea");
 	CAN.width = canvasArea.width();
 	CAN.height = canvasArea.height();
-	OVERLAY.width = canvasArea.width();
-	OVERLAY.height = canvasArea.height();
 	CENTER = [CAN.width*0.35, CAN.height/2]
 }
 
@@ -94,38 +92,38 @@ class Wheel{
 	constructor(){
 		this.rotation=0;
 		this.items = [
-		{"text": "+5 seconds", "val": "5+"},
-		{"text": "+30 seconds", "val": "30+"},
-		{"text": "+1 minute", "val": "60+"},
-		{"text": "Base: 1 minute", "val": "60"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "0.5 x ...", "val": "0.5*"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "Base: 5 minutes", "val": "300"},
-		{"text": "+5 seconds", "val": "5+"},
-		{"text": "+30 seconds", "val": "30+"},
-		{"text": "+1 minute", "val": "60+"},
-		{"text": "Base: 10 minutes", "val": "600"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "0.5 x ...", "val": "0.5*"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "Base: 20 minutes", "val": "1200"},
-		{"text": "+5 seconds", "val": "5+"},
-		{"text": "+30 seconds", "val": "30+"},
-		{"text": "+1 minute", "val": "60+"},
-		{"text": "Base: 1 second", "val": "60"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "0.5 x ...", "val": "0.5*"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "Base: 5 seconds", "val": "300"},
-		{"text": "+5 seconds", "val": "5+"},
-		{"text": "+30 seconds", "val": "30+"},
-		{"text": "+1 minute", "val": "60+"},
-		{"text": "Base: 10 seconds", "val": "600"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "0.5 x ...", "val": "0.5*"},
-		{"text": "1.5 x ...", "val": "1.5*"},
-		{"text": "Base: 20 seconds", "val": "1200"}
+			{"text": "+5 SECONDS", "val": "5+"},
+			{"text": "+30 SECONDS", "val": "30+"},
+			{"text": "+1 MINUTE", "val": "60+"},
+			{"text": "BASE: 1 MINUTE", "val": "60"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "0.5 x ...", "val": "0.5*"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "BASE: 5 MINUTES", "val": "300"},
+			{"text": "+5 SECONDS", "val": "5+"},
+			{"text": "+30 SECONDS", "val": "30+"},
+			{"text": "+1 MINUTE", "val": "60+"},
+			{"text": "BASE: 10 MINUTES", "val": "600"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "0.5 x ...", "val": "0.5*"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "BASE: 20 MINUTES", "val": "1200"},
+			{"text": "+5 SECONDS", "val": "5+"},
+			{"text": "+30 SECONDS", "val": "30+"},
+			{"text": "+1 MINUTE", "val": "60+"},
+			{"text": "BASE: 1 SECOND", "val": "1"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "0.5 x ...", "val": "0.5*"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "BASE: 5 SECONDS", "val": "5"},
+			{"text": "+5 SECONDS", "val": "5+"},
+			{"text": "+30 SECONDS", "val": "30+"},
+			{"text": "+1 MINUTE", "val": "60+"},
+			{"text": "BASE: 10 SECONDS", "val": "10"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "0.5 x ...", "val": "0.5*"},
+			{"text": "1.5 x ...", "val": "1.5*"},
+			{"text": "BASE: 20 SECONDS", "val": "20"}
 		];
 		this.endStates = [3, 7, 11, 15, 19, 23, 27, 31];
 		this.sep = (Math.PI*2)/this.items.length;
@@ -138,6 +136,7 @@ class Wheel{
 		this.lastRotationCheck = 0;
 		this.hasEnded = true;
 		this.results = "";
+		this.individualResults = [];
 	}
 
 	draw(ctx, overlay = -1){
@@ -169,8 +168,8 @@ class Wheel{
 
 		ctx.save();
 		ctx.translate(CENTER[0], CENTER[1]);
-		ctx.rotate(-1*(this.sep/2) + this.rotation);
-		ctx.fillStyle = "white";
+		ctx.rotate(-1*(this.sep/2-0.01) + this.rotation);
+		ctx.fillStyle = "black";
 		ctx.lineWidth = 1;
 
 		for(var item of this.items){
@@ -181,7 +180,6 @@ class Wheel{
 				ctx.font = fontSize + "px Monospace";
 			}
 			ctx.fillText(item["text"], CENTER[1]*0.79, 0, CENTER[1]*0.5);
-			ctx.strokeText(item["text"], CENTER[1]*0.79, 0, CENTER[1]*0.5);
 			ctx.rotate(-this.sep);
 		}
 
@@ -189,7 +187,7 @@ class Wheel{
 
 		ctx.fillStyle = "black";
 
-		var point = [CENTER[0]+CENTER[1]*0.8-10, CENTER[1]]
+		var point = [CENTER[0]+CENTER[1]*0.8-10, CENTER[1]];
 
 		ctx.beginPath();
 		ctx.moveTo(point[0], point[1]);
@@ -202,6 +200,7 @@ class Wheel{
 	spin(clear = false){
 		if(clear){
 			this.results = "";
+			resultsArea.innerHTML = "";
 		}
 		drawInterval = setInterval(draw, 1000/FPS);
 		this.hasEnded = false;
@@ -228,6 +227,8 @@ class Wheel{
 		this.hasEnded = true;
 		var result = Math.floor(this.rotation/this.sep);
 		this.results += this.items[result]["val"];
+		this.individualResults.push(result);
+		resultsArea.innerHTML += `<h3>${this.items[result]["text"]}</h3>`;
 		if(this.endStates.includes(result)){
 			console.log(this.results);
 			var total = parseMathsString(this.results);
