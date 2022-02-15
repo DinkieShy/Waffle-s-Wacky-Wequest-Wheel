@@ -64,6 +64,8 @@ $(document).ready(function(){
 	outcomeArea.click(function(){
 		STUFF_TO_DRAW[0].spin(true);
 	});
+
+	outcomeArea[0].innerHTML = "<h3 class=\"outcome\">Click to spin!</h3>";
 });
 
 $(window).resize(function(){
@@ -138,7 +140,7 @@ class Wheel{
 			{"text": "+5 SECONDS", "val": "5+"},
 			{"text": "+30 SECONDS", "val": "30+"},
 			{"text": "+1 MINUTE", "val": "60+"},
-			{"text": "BASE: 1 SECOND", "val": "1"},
+			{"text": "BASE: 45 MINUTES", "val": "2700"},
 			{"text": "1.5 x ...", "val": "1.5*"},
 			{"text": "0.5 x ...", "val": "0.5*"},
 			{"text": "1.5 x ...", "val": "1.5*"},

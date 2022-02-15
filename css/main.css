@@ -24,7 +24,8 @@ h2{
 #resultsList{
 	background-color: white;
 	width: 22.5vw;
-	top: 20vh;
+	top: 50%;
+	transform: translate(0, -50%);
 	right: 2.5vw;
 	position: absolute;
 	box-sizing: border-box;
