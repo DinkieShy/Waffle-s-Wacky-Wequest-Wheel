@@ -2,15 +2,33 @@ var STUFF_TO_DRAW = [];
 var CAN;
 var CTX;
 var CENTER;
-const FPS = 30;
+const FPS = 60;
 var OVERLAY;
 var OVERLAY_CTX;
 
-const audioCount = 128;
+const audioCount = 256;
 
 const audio = new Audio('assets/click.mp3');
 var audioSources = [];
 var audioIndex = 0;
+
+// const colourCycle = [
+// 	"#FFD1D1",
+// 	"#FBFFDE",
+// 	"#D7FDDF",
+// 	"#E0FFFD",
+// 	"#D0D0FE",
+// 	"#F9DEFF"
+// ];
+
+const colourCycle = [
+	"#F7F7F7",
+	"#CDCDCD",
+	"#A8E9FF"
+
+]
+
+var colourIndex = 0;
 
 $(document).ready(function(){
 	console.log("init");
@@ -22,11 +40,12 @@ $(document).ready(function(){
 
 	OVERLAY_CTX = OVERLAY.getContext("2d");
 	CTX = CAN.getContext("2d");
+	CTX.font = "30pt Monospace";
 
 	var wheel = new Wheel()
 	STUFF_TO_DRAW.push(wheel);
 
-	setInterval(draw, 1000/60);
+	setInterval(draw, 1000/FPS);
 
 	for(var i = 0; i < audioCount; i++){
 		audioSources.push(audio.cloneNode());
@@ -66,8 +85,8 @@ function playTick(){
 class Wheel{
 	constructor(){
 		this.rotation=0;
-		this.items = [];
-		this.sep = Math.PI/3;
+		this.items = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
+		this.sep = (Math.PI*2)/this.items.length;
 		this.speed = 0;
 		this.braking = 0.99;
 		this.brakingTime = 3000;
@@ -75,6 +94,7 @@ class Wheel{
 		this.startBraking;
 		this.cutoff = 0.01;
 		this.lastRotationCheck = 0;
+		this.hasEnded = true;
 	}
 
 	draw(ctx, overlay = -1){
@@ -94,11 +114,30 @@ class Wheel{
 
 		ctx.lineWidth = 2;
 		for(var i = this.rotation; i <= Math.PI*2 + this.rotation; i += this.sep){
+			ctx.fillStyle = colourCycle[colourIndex];
+			colourIndex += 1;
+			colourIndex = colourIndex % colourCycle.length;
 			ctx.beginPath();
 			ctx.arc(CENTER[0], CENTER[1], CENTER[1]*0.8, i, i+this.sep);
 			ctx.lineTo(CENTER[0], CENTER[1]);
-			ctx.stroke();
+			ctx.fill();
 		}
+		colourIndex = 0;
+
+		ctx.save();
+		ctx.translate(CENTER[0], CENTER[1]);
+		ctx.rotate(-1*(this.sep/2-0.125) + this.rotation);
+		ctx.fillStyle = "white";
+		ctx.lineWidth = 1;
+		ctx.textAlign = "center";
+
+		for(var item of this.items){
+			ctx.fillText(item, CENTER[1]*0.25, 0);
+			ctx.strokeText(item, CENTER[1]*0.25, 0);
+			ctx.rotate(-this.sep);
+		}
+
+		ctx.restore();
 
 		ctx.fillStyle = "black";
 
@@ -113,6 +152,7 @@ class Wheel{
 	}
 
 	spin(){
+		this.hasEnded = false;
 		this.speed = 5 + (Math.random()-0.5) * 5;
 		this.started = Date.now();
 		this.startBraking = this.started + this.brakingTime + (0.5+Math.random())*this.brakingTime
@@ -126,6 +166,14 @@ class Wheel{
 		}
 		else if(this.speed < this.cutoff){
 			this.speed = 0;
+			if(!this.hasEnded){
+				this.end();
+			}
 		}
+	}
+
+	end(){
+		this.hasEnded = true;
+		console.log(Math.floor(this.rotation/this.sep));
 	}
 }
