@@ -17,11 +17,12 @@ h2{
 	color: white;
 }
 
-#contentArea{
+.canvasHolder{
 	width: 100vw;
 	height: 85vh;
 	box-sizing: border-box;
 	background-color: lightgrey;
+	position: absolute;
 }
 
 html{
