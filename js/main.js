@@ -2,7 +2,7 @@ var STUFF_TO_DRAW = [];
 var CAN;
 var CTX;
 var CENTER;
-const FPS = 60;
+const FPS = 30;
 var OVERLAY;
 var OVERLAY_CTX;
 
@@ -80,6 +80,11 @@ class Wheel{
 	draw(ctx, overlay = -1){
 		this.rotate();
 
+		if(this.rotation % this.sep < this.lastRotationCheck){
+			playTick();
+		}
+		this.lastRotationCheck = this.rotation % this.sep;
+
 		ctx.fillStyle = "white";
 		ctx.lineWidth = 3;
 		ctx.beginPath();
@@ -94,11 +99,6 @@ class Wheel{
 			ctx.lineTo(CENTER[0], CENTER[1]);
 			ctx.stroke();
 		}
-
-		if(this.rotation % this.sep < this.lastRotationCheck){
-			playTick();
-		}
-		this.lastRotationCheck = this.rotation % this.sep;
 
 		ctx.fillStyle = "black";
 
