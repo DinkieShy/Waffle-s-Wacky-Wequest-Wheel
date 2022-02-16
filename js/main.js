@@ -243,12 +243,13 @@ class Wheel{
 
 		ctx.fillStyle = "black";
 
-		var point = [CENTER[0]+this.radius-10, CENTER[1]];
+		var pointSize = this.radius*0.05;
+		var point = [CENTER[0]+this.radius-pointSize/4, CENTER[1]];
 
 		ctx.beginPath();
 		ctx.moveTo(point[0], point[1]);
-		ctx.lineTo(point[0]+40, point[1]+20);
-		ctx.lineTo(point[0]+40, point[1]-20);
+		ctx.lineTo(point[0]+pointSize*2, point[1]+pointSize);
+		ctx.lineTo(point[0]+pointSize*2, point[1]-pointSize);
 		ctx.lineTo(point[0], point[1]);
 		ctx.fill();
 	}
