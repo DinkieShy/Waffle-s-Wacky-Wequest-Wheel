@@ -178,8 +178,8 @@ class Wheel{
 			this.radius = CENTER[0]*0.8;
 		}
 
-		this.maxTextHeight = this.radius*Math.sin(((Math.PI*this.radius*2)/this.items.length)/2*this.radius);
 		this.maxTextWidth = this.radius*0.6;
+		this.maxTextHeight = this.radius*0.6*Math.sin(((Math.PI*this.radius*0.6*2)/this.items.length)/2*this.radius*0.6);
 
 		this.rotate();
 
@@ -211,7 +211,16 @@ class Wheel{
 		ctx.translate(CENTER[0], CENTER[1]);
 		ctx.rotate(this.rotation);
 
-		ctx.drawImage(spinnerImage[0], -CENTER[1]*0.25, -CENTER[1]*0.25, CENTER[1]*0.5, CENTER[1]*0.5);
+		var imageSize = Math.ceil(this.radius*0.6);
+
+		ctx.beginPath();
+		ctx.arc(0, 0, this.radius*0.35, 0, 2*Math.PI);
+		ctx.fillStyle = "white";
+		ctx.strokeStyle = "black";
+		ctx.lineWidth = 2;
+		ctx.fill();
+		ctx.stroke();
+		ctx.drawImage(spinnerImage[0], -imageSize/2, -imageSize/2, imageSize, imageSize);
 
 		ctx.rotate(-1*(this.sep/2-0.01));
 		ctx.fillStyle = "black";
