@@ -48,8 +48,6 @@ $(document).ready(function(){
 	sizeCanvas();
 
 	CTX = CAN.getContext("2d");
-	CTX.textAlign = "right";
-	CTX.textBaseline = 'middle';
 
 	var wheel = new Wheel()
 	STUFF_TO_DRAW.push(wheel);
@@ -77,9 +75,8 @@ $(window).resize(function(){
 });
 
 function sizeCanvas(){
-	var canvasArea = $("#contentArea");
-	CAN.width = canvasArea.width();
-	CAN.height = canvasArea.height();
+	CAN.width = window.innerWidth;
+	CAN.height = window.innerHeight*0.8;
 	CENTER = [CAN.width*0.35, CAN.height/2]
 }
 
@@ -170,9 +167,20 @@ class Wheel{
 		this.hasEnded = true;
 		this.results = "";
 		this.individualResults = [];
+		this.radius = CENTER[1]*0.8;
+		this.maxTextHeight;
+		this.maxTextWidth;
 	}
 
 	draw(ctx, overlay = -1){
+		this.radius = CENTER[1]*0.8;
+		if(CENTER[0]*0.8 < this.radius){
+			this.radius = CENTER[0]*0.8;
+		}
+
+		this.maxTextHeight = this.radius*Math.sin(((Math.PI*this.radius*2)/this.items.length)/2*this.radius);
+		this.maxTextWidth = this.radius*0.6;
+
 		this.rotate();
 
 		if(this.rotation % this.sep < this.lastRotationCheck){
@@ -183,7 +191,7 @@ class Wheel{
 		ctx.fillStyle = "white";
 		ctx.lineWidth = 3;
 		ctx.beginPath();
-		ctx.arc(CENTER[0], CENTER[1], CENTER[1]*0.8, 0, 2*Math.PI);
+		ctx.arc(CENTER[0], CENTER[1], this.radius, 0, 2*Math.PI);
 		ctx.fill();
 		ctx.stroke();
 
@@ -193,7 +201,7 @@ class Wheel{
 			colourIndex += 1;
 			colourIndex = colourIndex % colourCycle.length;
 			ctx.beginPath();
-			ctx.arc(CENTER[0], CENTER[1], CENTER[1]*0.8, i, i+this.sep);
+			ctx.arc(CENTER[0], CENTER[1], this.radius, i, i+this.sep);
 			ctx.lineTo(CENTER[0], CENTER[1]);
 			ctx.fill();
 		}
@@ -208,15 +216,17 @@ class Wheel{
 		ctx.rotate(-1*(this.sep/2-0.01));
 		ctx.fillStyle = "black";
 		ctx.lineWidth = 1;
+		ctx.textAlign = "right";
+		ctx.textBaseline = 'middle';
 
 		for(var item of this.items){
 			var fontSize = 30;
 			ctx.font = fontSize + "px Monospace";
-			while(ctx.measureText(item["text"]).width > CENTER[1]*0.5){
+			while(ctx.measureText(item["text"]).width > this.maxTextWidth || ctx.measureText(item["text"]).height > this.maxTextHeight){
 				fontSize--;
 				ctx.font = fontSize + "px Monospace";
 			}
-			ctx.fillText(item["text"], CENTER[1]*0.79, 0, CENTER[1]*0.5);
+			ctx.fillText(item["text"], this.radius*0.99, 0);
 			ctx.rotate(-this.sep);
 		}
 
@@ -224,7 +234,7 @@ class Wheel{
 
 		ctx.fillStyle = "black";
 
-		var point = [CENTER[0]+CENTER[1]*0.8-10, CENTER[1]];
+		var point = [CENTER[0]+this.radius-10, CENTER[1]];
 
 		ctx.beginPath();
 		ctx.moveTo(point[0], point[1]);
